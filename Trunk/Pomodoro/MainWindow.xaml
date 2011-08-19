@@ -1,0 +1,56 @@
+﻿<Window x:Class="Pomodoro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:Pomodoro.Controls" 
+        WindowState="Minimized"
+        Loaded="WindowLoaded"
+        Title="Pomodoro Timer" Height="350" Width="525">
+    <Window.Resources>
+        <Storyboard x:Key="ShakeTomato">
+            <DoubleAnimation
+              Storyboard.TargetName="TomatoImage"
+              Storyboard.TargetProperty="(TextBlock.RenderTransform).(RotateTransform.Angle)"
+              From="-5"
+              To="5"
+              Duration="0:0:0.05"
+              FillBehavior="Stop"
+              AutoReverse="True"
+              RepeatBehavior="Forever" />
+        </Storyboard>
+
+    </Window.Resources>
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo />
+    </Window.TaskbarItemInfo>
+    <Grid Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <MediaElement Name="Player" LoadedBehavior="Manual" Source="Resources\ring.wav" />
+
+      <DockPanel Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" >
+            <Image Name="TomatoImage">
+                <Image.Source>
+                    <BitmapImage x:Name="PomodoroImage" UriSource="/Resources\tomato.png" />
+                </Image.Source>
+                <Image.RenderTransform>
+                    <RotateTransform Angle="0"
+                     CenterX="95"
+                     CenterY="20" />
+                </Image.RenderTransform>
+            </Image>
+                <Viewbox DockPanel.Dock="Right" Margin="4" >
+                <Controls:ClickSelectNumericTextBox x:Name="MinutesTextBox" Text="25 minutes" 
+                         BorderBrush="Transparent" BorderThickness="0" 
+                         ToolTip="Click to change the default session length"/>
+            </Viewbox>
+        </DockPanel>
+        <Button Grid.Row="1" IsEnabled="True" Name="ActionButton" Click="ActionButtonClicked">
+            <Viewbox Margin="4" >
+                <TextBlock Name="ActionButtonText" Text="Start Timer" />
+            </Viewbox>
+
+        </Button>
+    </Grid>
+</Window>
