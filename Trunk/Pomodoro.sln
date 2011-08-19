@@ -9,9 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencie
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\Microsoft.WindowsAPICodePack.dll = Dependencies\Microsoft.WindowsAPICodePack.dll
 		Dependencies\Microsoft.WindowsAPICodePack.Shell.dll = Dependencies\Microsoft.WindowsAPICodePack.Shell.dll
-		Dependencies\Microsoft.WindowsAPICodePack.Shell.pdb = Dependencies\Microsoft.WindowsAPICodePack.Shell.pdb
 		Dependencies\Microsoft.WindowsAPICodePack.ShellExtensions.dll = Dependencies\Microsoft.WindowsAPICodePack.ShellExtensions.dll
-		Dependencies\Microsoft.WindowsAPICodePack.ShellExtensions.pdb = Dependencies\Microsoft.WindowsAPICodePack.ShellExtensions.pdb
 	EndProjectSection
 EndProject
 Global
