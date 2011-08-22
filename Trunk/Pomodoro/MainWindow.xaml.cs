@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -206,7 +208,7 @@ namespace Pomodoro
             ActionButtonText.Text = Properties.Resources.MainWindow_CreateJumpList_Stop_Timer;
             _doing = Doing.Started;
             WindowState = WindowState.Minimized;
-            _thumbnailToolBarButton.Icon = new Icon("resources/stop.ico");
+            _thumbnailToolBarButton.Icon = _stopicon;
             _thumbnailToolBarButton.Tooltip = "Stop";
 
             _timer.Start();
@@ -214,7 +216,7 @@ namespace Pomodoro
 
         private void StopRinging()
         {
-            _thumbnailToolBarButton.Icon = new Icon("resources/start.ico");
+            _thumbnailToolBarButton.Icon = _starticon;
             _thumbnailToolBarButton.Tooltip = "Start";
 
             _shakeStoryBoard.Stop(this);
@@ -226,7 +228,13 @@ namespace Pomodoro
 
         private void StopTimer()
         {
-            _thumbnailToolBarButton.Icon = new Icon("resources/start.ico");
+            if(_doing == Doing.Ringing)
+            {
+                StopRinging();
+                return;
+            }
+
+            _thumbnailToolBarButton.Icon = _starticon;
             _thumbnailToolBarButton.Tooltip = "Start";
             
             MinutesTextBox.IsReadOnly = false;
@@ -249,8 +257,8 @@ namespace Pomodoro
 
         public void CreatePreviewButtons()
         {
-            _starticon = new Icon("resources/start.ico");
-            _stopicon = new Icon("resources/start.ico");
+            _starticon = new Icon(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/resources/start.ico");
+            _stopicon = new Icon(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/resources/stop.ico");
 
             _thumbnailToolBarButton = new ThumbnailToolBarButton(
                 _starticon, "Start");
