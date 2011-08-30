@@ -179,6 +179,11 @@ namespace Pomodoro
 
         private void ActionButtonClicked(object sender, RoutedEventArgs e)
         {
+            HandleActionButtons();
+        }
+
+        private void HandleActionButtons()
+        {
             switch (_doing)
             {
                 case Doing.Done: //restart
@@ -271,6 +276,9 @@ namespace Pomodoro
 
         private void ToolbarThumbnailToolBarButtonClick(object sender, ThumbnailButtonClickedEventArgs e)
         {
+
+            HandleActionButtons();
+            return;
             var button = sender as ThumbnailToolBarButton;
             if (button == null) return;
             if (button.Tooltip == "Start")
