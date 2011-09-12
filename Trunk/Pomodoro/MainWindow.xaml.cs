@@ -225,6 +225,8 @@ namespace Pomodoro
             _thumbnailToolBarButton.Tooltip = "Start";
 
             _shakeStoryBoard.Stop(this);
+            this.StopFlashingWindow();
+            TaskbarItemInfo.Overlay = CreateTaskbarIconOverlayImage("");    //remove the minutes from the icon, stupid to show 0
             MinutesTextBox.IsReadOnly = false;
             Player.Stop();
             ActionButtonText.Text = Properties.Resources.MainWindow_CreateJumpList_Start_New_Session;
@@ -276,15 +278,7 @@ namespace Pomodoro
 
         private void ToolbarThumbnailToolBarButtonClick(object sender, ThumbnailButtonClickedEventArgs e)
         {
-
             HandleActionButtons();
-            return;
-            var button = sender as ThumbnailToolBarButton;
-            if (button == null) return;
-            if (button.Tooltip == "Start")
-                StartTimer();
-            else
-                StopTimer();
         }
     }
 }
