@@ -23,13 +23,19 @@ namespace Pomodoro
     public partial class MainWindow : Window
     {
         private Doing _doing;
-        private int _seconds;
+
+        private int _workSeconds;
+        private int _relaxSeconds;
+
         private readonly DispatcherTimer _timer;
         private Storyboard _shakeStoryBoard;
         private int _rings;
         private Icon _starticon;
         private Icon _stopicon;
         private ThumbnailToolBarButton _thumbnailToolBarButton;
+
+        private PomodoroStateMachine _stateMachine;
+
 
         public MainWindow()
         {
@@ -38,7 +44,13 @@ namespace Pomodoro
             _doing = Doing.Stopped;
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             _timer.Tick += TimerTick;
-            _seconds = Settings.Default.SessionLength * 60;
+
+            _workSeconds = Settings.Default.SessionLength * 60;
+            _relaxSeconds = Settings.Default.RelaxLength * 60;
+
+            _stateMachine = new PomodoroStateMachine();
+
+
             MinutesTextBox.Text = Minutes + " " + Properties.Resources.MainWindow_TimerTick_minutes;
 
             MinutesTextBox.GotFocus += OnMinutesTextBoxOnGotFocus;
@@ -96,17 +108,17 @@ namespace Pomodoro
             {
                 MessageBox.Show("Too much input, Number 5!");
             }
-            _seconds = Settings.Default.SessionLength * 60;
+            _workSeconds = Settings.Default.SessionLength * 60;
         }
 
         public int Minutes
         {
-            get { return (int)Math.Ceiling((decimal)_seconds / 60); }
+            get { return (int)Math.Ceiling((decimal)_workSeconds / 60); }
         }
 
         private void TimerTick(object sender, EventArgs e)
         {
-            _seconds--;
+            _workSeconds--;
             MinutesTextBox.Text = Minutes + " " + Properties.Resources.MainWindow_TimerTick_minutes;
 
             TaskbarItemInfo.Overlay = CreateTaskbarIconOverlayImage(Minutes.ToString());
@@ -122,7 +134,7 @@ namespace Pomodoro
             //            var image = PomodoroImage;
             //            preview.SetImage(image);
 
-            if (_seconds == 0)
+            if (_workSeconds == 0)
             {
                 RingAndFlash();
             }
@@ -135,6 +147,7 @@ namespace Pomodoro
             _doing = Doing.Ringing;
             ActionButtonText.Text = Properties.Resources.MainWindow_TimerTick_Stop_Ringing_;
             _timer.Stop();
+            this._stateMachine.MoveToNextState();
             Player.Play();
         }
 
@@ -203,7 +216,7 @@ namespace Pomodoro
 
         private void RestartTimer()
         {
-            _seconds = Settings.Default.SessionLength * 60;
+            _workSeconds = this._stateMachine.CurrentTime;
             StartTimer();
         }
 
