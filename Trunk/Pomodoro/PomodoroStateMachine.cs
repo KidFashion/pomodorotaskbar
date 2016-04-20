@@ -46,11 +46,13 @@ namespace Pomodoro
                 else return _workSeconds;
             }
         }
-        public PomodoroStateMachine() : base(State.DoingWork)
-        { }
+        public PomodoroStateMachine() : this(State.DoingWork)
+        {
+        }
 
         public PomodoroStateMachine(State initialState) : base(initialState)
         {
+            initialize();
             //this._sm = new StateMachine<State, Trigger>(initialState);
         }
 

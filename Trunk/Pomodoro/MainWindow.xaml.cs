@@ -24,8 +24,7 @@ namespace Pomodoro
     {
         private Doing _doing;
 
-        private int _workSeconds;
-        private int _relaxSeconds;
+        private int _seconds;
 
         private readonly DispatcherTimer _timer;
         private Storyboard _shakeStoryBoard;
@@ -45,10 +44,9 @@ namespace Pomodoro
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             _timer.Tick += TimerTick;
 
-            _workSeconds = Settings.Default.SessionLength * 60;
-            _relaxSeconds = Settings.Default.RelaxLength * 60;
 
             _stateMachine = new PomodoroStateMachine();
+            _seconds = _stateMachine.CurrentTime;
 
 
             MinutesTextBox.Text = Minutes + " " + Properties.Resources.MainWindow_TimerTick_minutes;
@@ -108,17 +106,18 @@ namespace Pomodoro
             {
                 MessageBox.Show("Too much input, Number 5!");
             }
-            _workSeconds = Settings.Default.SessionLength * 60;
+
+            _seconds = Settings.Default.SessionLength * 60;
         }
 
         public int Minutes
         {
-            get { return (int)Math.Ceiling((decimal)_workSeconds / 60); }
+            get { return (int)Math.Ceiling((decimal)_seconds / 60); }
         }
 
         private void TimerTick(object sender, EventArgs e)
         {
-            _workSeconds--;
+            _seconds--;
             MinutesTextBox.Text = Minutes + " " + Properties.Resources.MainWindow_TimerTick_minutes;
 
             TaskbarItemInfo.Overlay = CreateTaskbarIconOverlayImage(Minutes.ToString());
@@ -134,7 +133,7 @@ namespace Pomodoro
             //            var image = PomodoroImage;
             //            preview.SetImage(image);
 
-            if (_workSeconds == 0)
+            if (_seconds == 0)
             {
                 RingAndFlash();
             }
@@ -147,7 +146,6 @@ namespace Pomodoro
             _doing = Doing.Ringing;
             ActionButtonText.Text = Properties.Resources.MainWindow_TimerTick_Stop_Ringing_;
             _timer.Stop();
-            this._stateMachine.MoveToNextState();
             Player.Play();
         }
 
@@ -216,7 +214,8 @@ namespace Pomodoro
 
         private void RestartTimer()
         {
-            _workSeconds = this._stateMachine.CurrentTime;
+            this._stateMachine.MoveToNextState();
+            _seconds = this._stateMachine.CurrentTime;
             StartTimer();
         }
 
